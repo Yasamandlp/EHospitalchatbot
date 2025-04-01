@@ -1,0 +1,14 @@
+version: '3.9'
+
+services:
+  e-hospital-app:
+    build: .
+    container_name: e-hospital-app
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped

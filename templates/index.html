@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Hospital Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        #chatbox { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
+        input[type="text"], input[type="password"] { width: 100%; margin: 5px 0; padding: 5px; }
+        button { padding: 5px 10px; margin-left: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>E-Hospital Chatbot</h1>
+        <input type="text" id="email" placeholder="Email...">
+        <input type="password" id="password" placeholder="Password...">
+        <div id="chatbox"></div>
+        <input type="text" id="input" placeholder="Type your message...">
+        <button onclick="sendMessage()">Send</button>
+        <button onclick="recordVoice()">Record Voice</button>
+    </div>
+
+    <script>
+        function sendMessage() {
+            let input = document.getElementById('input');
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+            let message = input.value;
+            if (message.trim() === '' || email.trim() === '' || password.trim() === '') return;
+
+            let chatbox = document.getElementById('chatbox');
+            chatbox.innerHTML += `<p><b>You:</b> ${message}</p>`;
+            input.value = '';
+
+            fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: message, email: email, password: password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                chatbox.innerHTML += `<p><b>Chatbot:</b> ${data.response}</p>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+            });
+        }
+
+        function recordVoice() {
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+            if (email.trim() === '' || password.trim() === '') {
+                alert('Please enter email and password first.');
+                return;
+            }
+
+            fetch('/chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: "", email: email, password: password })
+            })
+            .then(response => response.json())
+            .then(data => {
+                let chatbox = document.getElementById('chatbox');
+                chatbox.innerHTML += `<p><b>Chatbot:</b> ${data.response}</p>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+            });
+        }
+
+        document.getElementById('input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+</html>

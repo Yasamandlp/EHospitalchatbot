@@ -1,0 +1,7 @@
+flask
+flask-session
+flasgger
+pandas
+fuzzywuzzy
+SpeechRecognition
+pyttsx3
