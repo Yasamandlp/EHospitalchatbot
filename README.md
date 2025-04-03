@@ -1,8 +1,6 @@
-<<<<<<< HEAD
+# 🏥 E-Hospital Chatbot
 
-# 🏥 e-Hospital Voice Assistant API
-
-A Flask-based backend application for managing patients, doctors, treatments, and communication within an electronic hospital system. It supports Persian and English input, voice-to-text interaction, and includes a Swagger-documented RESTful API.
+A FastAPI-based backend application for managing patient-doctor interactions in an electronic hospital system. It supports Persian and English input, voice-to-text interaction, and provides a user-friendly chat interface for retrieving medical information.
 
 ## 🚀 Features
 
@@ -10,34 +8,39 @@ A Flask-based backend application for managing patients, doctors, treatments, an
 - 🌍 Language detection (English & Persian)
 - 🔍 Fuzzy keyword matching for queries
 - 📊 Patient & doctor management with SQLite
-- 🔐 Session management
+- 🔐 Session management using cookies
 - 🔄 API routes for sending messages and retrieving data
-- 📄 Swagger UI documentation for all endpoints
+- 💻 Improved chat interface with a modern design
 
 ## 🧱 Tech Stack
 
 - Python
-- Flask
+- FastAPI
 - SQLite
 - Pandas
 - FuzzyWuzzy
 - SpeechRecognition
 - pyttsx3
-- Flasgger (Swagger for Flask)
+- Uvicorn (ASGI server)
 
 ---
 
 ## 📂 Project Structure
 
-```
-yasi_project/
-├── app_with_swagger.py       # Main API backend with Swagger docs
+
+healthcare_project/
+├── main.py                   # Main FastAPI application
+├── routes.py                 # API routes and chat logic
+├── utils.py                  # Helper functions and database logic
 ├── database.db               # SQLite database file
 ├── data/                     # Patient-related CSV data
-├── templates/                # HTML templates
-├── flask_session/            # Flask session storage
-└── New folder (2)/           # Image assets
-```
+│   ├── patients_registration (1).csv
+│   ├── patient_doctor (1).csv
+│   ├── online_patients (1).csv
+│   ├── patient_to_doctor_message (1).csv
+│   └── patients_treatment (1).csv
+└── templates/                # HTML templates
+└── index.html            # Chat interface
 
 ---
 
@@ -49,48 +52,66 @@ After running the app, access the Swagger UI at:
 
 ---
 
+
+---
+
 ## 🛠️ How to Run
 
 ### Step 1: Install Dependencies
 
-```bash
-pip install flask flask-session flasgger pandas fuzzywuzzy SpeechRecognition pyttsx3
-```
-
-### Step 2: Run the App
+Make sure you have Python 3.11+ installed. Then, install the required packages:
 
 ```bash
-python app_with_swagger.py
-```
+pip install fastapi uvicorn pandas fuzzywuzzy speechrecognition pyttsx3 requests
+
+Step 2: Prepare CSV Data
+Ensure the following CSV files are placed in the data/ directory:
+
+patients_registration (1).csv
+patient_doctor (1).csv
+online_patients (1).csv
+patient_to_doctor_message (1).csv
+patients_treatment (1).csv
+These files contain patient, doctor, and treatment data used by the application.
+
+Step 3: Run the App
+Run the FastAPI application using the following command:
+
+bash
+
+Collapse
+
+Wrap
+
+Copy
+python main.py
+The server will start on http://localhost:8000. Open this URL in your browser to access the chat interface.
 
 ---
 
-## 📤 API Endpoints
-
-| Method | Endpoint                  | Description                       |
-|--------|---------------------------|-----------------------------------|
-| GET    | `/patients`               | Retrieve all patients             |
-| POST   | `/message`                | Send a message to a doctor        |
-| GET    | `/messages/<patient_id>`  | Get messages for a patient        |
-| GET    | `/treatments/<patient_id>`| Get treatments for a patient      |
+📤 API Endpoints
+Method	Endpoint	Description
+GET	/	Renders the chat interface
+POST	/chat	Handles chat messages and voice input
 
 ---
 
-## 📌 TODO / Suggestions
-
-- [ ] Add user authentication (JWT or session login)
-- [ ] Create `POST /login` and `POST /register` routes
-- [ ] Add `GET /doctors` and `GET /patients/<id>`
-- [ ] Protect message routes with patient login
-- [ ] Add email verification or OTP login
-- [ ] Upload patient files / voice messages
-- [ ] Integrate with front-end (React or Vue)
+📌 TODO / Suggestions
+ Add user authentication (JWT or OAuth)
+ Create POST /login and POST /register routes
+ Add GET /doctors and GET /patients/<id> endpoints
+ Protect chat routes with authentication
+ Add email verification or OTP login
+ Support uploading patient files or voice messages
+ Integrate with a front-end framework (React or Vue)
+ Add support for more languages
+ Improve fuzzy matching accuracy
 
 ---
 
 ## 👨‍💻 Author
 
-Hesam | M.Sc. CS Student | University of Ottawa  
+Yasaman Dolatpour | University of Ottawa  
 🇮🇷 Originally from Iran | 🇨🇦 Living in Canada  
 =======
 # EHospitalchatbot
