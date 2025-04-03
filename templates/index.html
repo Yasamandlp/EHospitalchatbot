@@ -5,34 +5,128 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>E-Hospital Chatbot</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .container { max-width: 600px; margin: 0 auto; }
-        #chatbox { border: 1px solid #ccc; padding: 10px; height: 300px; overflow-y: scroll; }
-        input[type="text"], input[type="password"] { width: 100%; margin: 5px 0; padding: 5px; }
-        button { padding: 5px 10px; margin-left: 5px; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        #chatbox {
+            border: 1px solid #ccc;
+            padding: 15px;
+            height: 300px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        #chatbox p {
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        #chatbox p.user {
+            background-color: #007bff;
+            color: white;
+            text-align: right;
+            margin-left: 20%;
+            margin-right: 5px;
+        }
+        #chatbox p.bot {
+            background-color: #e9ecef;
+            color: #333;
+            margin-right: 20%;
+            margin-left: 5px;
+        }
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 100%;
+            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button#send-button {
+            background-color: #007bff;
+            color: white;
+        }
+        button#send-button:hover {
+            background-color: #0056b3;
+        }
+        button#record-button {
+            background-color: #28a745;
+            color: white;
+        }
+        button#record-button:hover {
+            background-color: #218838;
+        }
+        button#record-button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>E-Hospital Chatbot</h1>
-        <input type="text" id="email" placeholder="Email...">
-        <input type="password" id="password" placeholder="Password...">
+        <input type="email" id="email" name="email" placeholder="Email...">
+        <input type="password" id="password" name="password" placeholder="Password...">
         <div id="chatbox"></div>
-        <input type="text" id="input" placeholder="Type your message...">
-        <button onclick="sendMessage()">Send</button>
-        <button onclick="recordVoice()">Record Voice</button>
+        <div class="input-group">
+            <input type="text" id="input" name="message" placeholder="Type your message...">
+            <button id="send-button" onclick="sendMessage()">Send</button>
+            <button id="record-button" onclick="recordVoice()">🎙️ Record Voice</button>
+        </div>
     </div>
 
     <script>
-        function sendMessage() {
-            let input = document.getElementById('input');
-            let email = document.getElementById('email').value;
-            let password = document.getElementById('password').value;
-            let message = input.value;
-            if (message.trim() === '' || email.trim() === '' || password.trim() === '') return;
+        const chatbox = document.getElementById('chatbox');
+        const input = document.getElementById('input');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const recordButton = document.getElementById('record-button');
 
-            let chatbox = document.getElementById('chatbox');
-            chatbox.innerHTML += `<p><b>You:</b> ${message}</p>`;
+        function sendMessage() {
+            const message = input.value.trim();
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            if (message === '' || email === '' || password === '') {
+                alert('Please fill in all fields.');
+                return;
+            }
+
+            // Display user message
+            chatbox.innerHTML += `<p class="user"><b>You:</b> ${message}</p>`;
             input.value = '';
 
             fetch('/chat', {
@@ -42,18 +136,26 @@
             })
             .then(response => response.json())
             .then(data => {
-                chatbox.innerHTML += `<p><b>Chatbot:</b> ${data.response}</p>`;
+                chatbox.innerHTML += `<p class="bot"><b>Chatbot:</b> ${data.response}</p>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+            })
+            .catch(error => {
+                chatbox.innerHTML += `<p class="bot"><b>Chatbot:</b> Error: ${error.message}</p>`;
                 chatbox.scrollTop = chatbox.scrollHeight;
             });
         }
 
         function recordVoice() {
-            let email = document.getElementById('email').value;
-            let password = document.getElementById('password').value;
-            if (email.trim() === '' || password.trim() === '') {
+            const email = emailInput.value.trim();
+            const password = passwordInput.value.trim();
+
+            if (email === '' || password === '') {
                 alert('Please enter email and password first.');
                 return;
             }
+
+            recordButton.disabled = true;
+            recordButton.innerText = 'Recording...';
 
             fetch('/chat', {
                 method: 'POST',
@@ -62,14 +164,24 @@
             })
             .then(response => response.json())
             .then(data => {
-                let chatbox = document.getElementById('chatbox');
-                chatbox.innerHTML += `<p><b>Chatbot:</b> ${data.response}</p>`;
+                chatbox.innerHTML += `<p class="bot"><b>Chatbot:</b> ${data.response}</p>`;
                 chatbox.scrollTop = chatbox.scrollHeight;
+                recordButton.disabled = false;
+                recordButton.innerText = '🎙️ Record Voice';
+            })
+            .catch(error => {
+                chatbox.innerHTML += `<p class="bot"><b>Chatbot:</b> Error: ${error.message}</p>`;
+                chatbox.scrollTop = chatbox.scrollHeight;
+                recordButton.disabled = false;
+                recordButton.innerText = '🎙️ Record Voice';
             });
         }
 
-        document.getElementById('input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') sendMessage();
+        // Send message on Enter key press
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
         });
     </script>
 </body>
